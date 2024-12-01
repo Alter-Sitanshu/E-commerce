@@ -1,0 +1,58 @@
+{% extends 'home/landing.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">Your Cart</h5>
+            </div>
+            <div class="card-body">
+                <!-- Cart Items -->
+                {% for item in item_list %}
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>{{ item.name }}({{ item.quantity }})</span>
+                        <span>$ {{ item.price }}</span>
+                    </div>
+                {% endfor %}
+                <hr>
+                <!-- Total -->
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Total</span>
+                    <span>$ {{ total }}</span>
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <button class="btn btn-success" id="checkout">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        checkout_button = document.getElementById('checkout');
+        checkout_button.addEventListener('click', (e)=>{
+            fetch('/home/checkout',  {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken() 
+                },
+                body: ''
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert('An error occurred.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to complete checkout.');
+            });
+        })
+        function getCSRFToken() {
+            const csrfToken = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+            return csrfToken ? csrfToken.split('=')[1] : '';
+        }
+    </script>
+{% endblock %}

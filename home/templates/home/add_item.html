@@ -1,0 +1,23 @@
+{% extends 'home/landing.html' %}
+{% block content %}
+    {% if warning %}
+    <div class="text-center my-4">
+        <h2 class="text-danger mx-auto">{{ warning }}</h2>
+    </div>
+    {% endif %}
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="card bg-dark col-md-6 rounded-4 p-3">
+            
+            <h2 class="card-title text-light mx-auto mt-4">Item Form</h2>
+            <div class="card-body text-light">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-success my-3">Submit</button>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+
+{% endblock %}
